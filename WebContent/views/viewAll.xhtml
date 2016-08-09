@@ -1,0 +1,152 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Ver todo</title>
+	<f:event listener="#{manageBean.checkSession()}" type="preRenderView"></f:event>
+
+</h:head>
+
+<h:body>
+
+	<h:form id="form">
+		
+		<h3>state dates</h3>
+		<p:accordionPanel id="panelAcc" multiple="true">
+			<p:tab title="Countries">
+				<!-- 				<h:panelGrid id="panelC" columns="2" cellpadding="10"> -->
+
+				<p:dataTable id="tableCountry" var="count" value="#{manageBean.countries}" paginator="true" rows="5">
+					<p:column headerText="Id">
+						<h:outputText value="#{count.id}" />
+					</p:column>
+
+					<p:column headerText="name">
+						<h:outputText value="#{count.name}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<!-- 				</h:panelGrid> -->
+			</p:tab>
+			<p:tab title="Departments">
+				<p:dataTable id="tableDepartments" paginator="true" rows="5" var="dep" value="#{manageBean.departments}">
+					<p:column headerText="Id">
+						<h:outputText value="#{dep.id}" />
+					</p:column>
+
+					<p:column headerText="name">
+						<h:outputText value="#{dep.name}" />
+					</p:column>
+
+					<p:column headerText="Id Pais">
+						<h:outputText value="#{dep.country.id}" />
+					</p:column>
+
+
+				</p:dataTable>
+			</p:tab>
+			<p:tab title="Cities">
+
+				<p:dataTable id="tableCities" paginator="true" rows="5" var="city" value="#{manageBean.cities}">
+					<p:column headerText="Id">
+						<h:outputText value="#{city.id}" />
+					</p:column>
+
+					<p:column headerText="name">
+						<h:outputText value="#{city.name}" />
+					</p:column>
+
+					<p:column headerText="Id department">
+						<h:outputText value="#{city.department.id}" />
+					</p:column>
+
+
+				</p:dataTable>
+			</p:tab>
+		</p:accordionPanel>
+
+		<h3>ACTIONS</h3>
+		<p:panelGrid columns="3" layout="grid">
+
+			<p:commandButton value="New country" type="button" icon="ui-icon-extlink" onclick="PF('dlgNewCountry').show();">
+
+			</p:commandButton>
+			<p:commandButton value="New department" type="button" icon="ui-icon-extlink" onclick="PF('dlgNewDepartment').show();">
+
+			</p:commandButton>
+			<p:commandButton value="New city" type="button" icon="ui-icon-extlink" onclick="PF('dlgNewCity').show();">
+
+			</p:commandButton>
+
+		</p:panelGrid>
+
+
+
+
+	</h:form>
+	<p:dialog modal="true" header="New country" widgetVar="dlgNewCountry" showEffect="explode" hideEffect="bounce" height="100">
+		<h:form id="formNewC">
+		<p:growl id="growlC" showDetail="true" />  
+			<p:outputLabel value="name: " for="iptName"></p:outputLabel>
+			<p:inputText id="iptName" value="#{manageBean.country.name}"></p:inputText>
+			<br />
+			<br />
+			<p:commandButton value="Add country" action="#{manageBean.createCountry(manageBean.country)}" update="growlC" process="formNewC" onclick="PF('dlgNewCountry').hide();" oncomplete="rc()">
+
+			</p:commandButton>
+			<p:remoteCommand name="rc" update=":form:panelAcc:tableCountry" />
+		</h:form>
+	</p:dialog>
+	<p:dialog modal="true" header="New department" widgetVar="dlgNewDepartment" showEffect="explode" hideEffect="bounce" height="200">
+		<h:form id="formNewD">
+		<p:growl id="growlD" showDetail="true"/>  
+			<h:panelGrid columns="2">
+				<p:outputLabel value="name: " for="iptNameD"></p:outputLabel>
+				<p:inputText id="iptNameD" value="#{manageBean.department.name}"></p:inputText>
+				<br />
+				<p:column></p:column>
+				<p:column></p:column>
+				<!-- 				<p:outputLabel value="id Country: " for="iptIdDep"></p:outputLabel> -->
+				<!-- 				<p:inputText id="iptIdDep" value="#{manageBean.department.country.id}"></p:inputText> -->
+				<p:outputLabel for="smcountry" value="Pais:" />
+				<p:selectOneMenu id="smcountry" value="#{manageBean.department.country.id}" style="width:125px">
+					<f:selectItems value="#{manageBean.countries}" var="count" itemValue="#{count.id}" itemLabel="#{count.name}"></f:selectItems>
+				</p:selectOneMenu>
+				<br />
+				<br />
+				<p:commandButton value="Add department" action="#{manageBean.createDepartment(manageBean.department)}" update="growlD" process="formNewD" onclick="PF('dlgNewDepartment').hide();" oncomplete="rcD()">
+
+				</p:commandButton>
+				<p:remoteCommand name="rcD" update=":form:panelAcc:tableDepartments" />
+
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+	<p:dialog modal="true" header="New city" widgetVar="dlgNewCity" showEffect="explode" hideEffect="bounce" height="200">
+		<h:form id="formNewCi">
+		<p:growl id="growlCi" showDetail="true" />
+			<h:panelGrid columns="2">
+				<p:outputLabel value="name: " for="iptNameC"></p:outputLabel>
+				<p:inputText id="iptNameC" value="#{manageBean.city.name}"></p:inputText>
+				<br />
+				<p:column></p:column>
+				<p:column></p:column>
+<!-- 				<p:outputLabel value="Department Id: " for="iptDepId"></p:outputLabel> -->
+<!-- 				<p:inputText id="iptDepId" value="#{manageBean.city.department.id}"></p:inputText> -->
+				<p:outputLabel for="smcountry" value="Departamento:" />
+				<p:selectOneMenu id="smcountry" value="#{manageBean.city.department.id}" style="width:125px">
+					<f:selectItems value="#{manageBean.departments}" var="dep" itemValue="#{dep.id}" itemLabel="#{dep.name}"></f:selectItems>
+				</p:selectOneMenu>
+				<br />
+				<br />
+				<br />
+				<p:commandButton value="Add city" action="#{manageBean.createCity(manageBean.city)}" update="growlCi"  process="formNewCi" onclick="PF('dlgNewCity').hide();" oncomplete="rcC()">
+
+				</p:commandButton>
+				<p:remoteCommand name="rcC" update=":form:panelAcc:tableCities" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+</h:body>
+</html>

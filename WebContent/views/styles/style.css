@@ -1,0 +1,7 @@
+@CHARSET "ISO-8859-1";
+
+.panelGridCenter {
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 300px; 
+}
